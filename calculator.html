@@ -14,7 +14,7 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background-color: #f0f8ff;
+            background-color: #f7f9fc;
         }
         .calculator {
             padding: 20px;
@@ -29,10 +29,11 @@
             margin: 10px 0;
             padding: 10px;
             font-size: 1em;
-            border: 2px solid #007bff;
+            border: 1px solid #007bff;
             border-radius: 5px;
             width: 100%;
             box-sizing: border-box;
+            background-color: #f0f8ff;
         }
         .result {
             margin-top: 20px;
@@ -45,6 +46,8 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            border-radius: 8px;
+            overflow: hidden;
         }
         table, th, td {
             border: 1px solid #007bff;
@@ -52,12 +55,21 @@
         th, td {
             padding: 10px;
             text-align: left;
+            color: #333;
         }
         th {
             background-color: #007bff;
             color: white;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
         }
         td {
+            background-color: #e6f7ff;
+        }
+        tr:nth-child(even) td {
+            background-color: #f0f8ff;
+        }
+        tr:nth-child(odd) td {
             background-color: #e6f7ff;
         }
     </style>
