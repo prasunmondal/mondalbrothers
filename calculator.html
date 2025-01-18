@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator</title>
+    <title>Discount & Commission Calculator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,16 +22,19 @@
             padding: 20px;
             background: #fff;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
         }
         .calculator input[type="number"] {
-            margin: 5px;
+            margin: 5px 0;
             padding: 10px;
-            font-size: 1.2em;
+            font-size: 1em;
             border: 1px solid #ccc;
             border-radius: 5px;
-            width: 100px;
+            width: 100%;
+            box-sizing: border-box;
         }
         .calculator button {
+            margin-top: 10px;
             padding: 10px 20px;
             font-size: 1.2em;
             border: none;
@@ -39,58 +42,61 @@
             background-color: #007bff;
             color: white;
             cursor: pointer;
+            width: 100%;
         }
         .calculator button:hover {
             background-color: #0056b3;
         }
         .result {
             margin-top: 20px;
-            font-size: 1.5em;
+            font-size: 1.2em;
             color: #333;
         }
     </style>
 </head>
 <body>
     <div class="calculator">
-        <h2>Simple Calculator</h2>
-        <input type="number" id="num1" placeholder="Enter first number">
-        <input type="number" id="num2" placeholder="Enter second number">
-        <br>
-        <button onclick="calculate('add')">Add</button>
-        <button onclick="calculate('subtract')">Subtract</button>
-        <button onclick="calculate('multiply')">Multiply</button>
-        <button onclick="calculate('divide')">Divide</button>
+        <h2>Discount & Commission Calculator</h2>
+        <label for="payingAmount">Paying Amount:</label>
+        <input type="number" id="payingAmount" placeholder="Enter paying amount">
+
+        <label for="totalDiscount">Total Discount %:</label>
+        <input type="number" id="totalDiscount" placeholder="Enter total discount %">
+
+        <label for="discountPassedOn">Discount Passed On %:</label>
+        <input type="number" id="discountPassedOn" placeholder="Enter discount passed on %">
+
+        <label for="commission">Commission %:</label>
+        <input type="number" id="commission" placeholder="Calculated automatically" readonly>
+
+        <button onclick="calculateValues()">Calculate</button>
+
         <div class="result" id="result"></div>
     </div>
 
     <script>
-        function calculate(operation) {
-            const num1 = parseFloat(document.getElementById('num1').value);
-            const num2 = parseFloat(document.getElementById('num2').value);
-            let result;
+        function calculateValues() {
+            const payingAmount = parseFloat(document.getElementById('payingAmount').value);
+            const totalDiscount = parseFloat(document.getElementById('totalDiscount').value);
+            const discountPassedOn = parseFloat(document.getElementById('discountPassedOn').value);
 
-            if (isNaN(num1) || isNaN(num2)) {
-                result = "Please enter valid numbers.";
-            } else {
-                switch (operation) {
-                    case 'add':
-                        result = num1 + num2;
-                        break;
-                    case 'subtract':
-                        result = num1 - num2;
-                        break;
-                    case 'multiply':
-                        result = num1 * num2;
-                        break;
-                    case 'divide':
-                        result = num2 !== 0 ? (num1 / num2) : "Cannot divide by zero.";
-                        break;
-                    default:
-                        result = "Unknown operation.";
-                }
+            if (isNaN(payingAmount) || isNaN(totalDiscount) || isNaN(discountPassedOn)) {
+                document.getElementById('result').textContent = "Please enter valid numbers in all fields.";
+                return;
             }
 
-            document.getElementById('result').textContent = `Result: ${result}`;
+            const commission = totalDiscount - discountPassedOn;
+            document.getElementById('commission').value = commission.toFixed(2);
+
+            const totalDiscountValue = (payingAmount * totalDiscount) / 100;
+            const discountPassedOnValue = (payingAmount * discountPassedOn) / 100;
+            const commissionValue = (payingAmount * commission) / 100;
+
+            document.getElementById('result').innerHTML = `
+                Total Discount: ₹${totalDiscountValue.toFixed(2)}<br>
+                Discount Passed On: ₹${discountPassedOnValue.toFixed(2)}<br>
+                Commission: ₹${commissionValue.toFixed(2)}
+            `;
         }
     </script>
 </body>
