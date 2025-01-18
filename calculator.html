@@ -85,7 +85,7 @@
             }
 
             const commission = totalDiscount - discountPassedOn;
-            document.getElementById('commission').value = commission.toFixed(2);
+            document.getElementById('commission').value = commission;
 
             const totalDiscountValue = (payingAmount * totalDiscount) / 100;
             const discountPassedOnValue = (payingAmount * discountPassedOn) / 100;
