@@ -38,6 +38,19 @@
             font-size: 1.2em;
             color: #333;
         }
+        .result-table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .result-table th, .result-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        .result-table th {
+            background-color: #f9f9f9;
+        }
     </style>
 </head>
 <body>
@@ -65,7 +78,7 @@
             const discountPassedOn = parseFloat(document.getElementById('discountPassedOn').value);
 
             if (isNaN(payingAmount) || isNaN(totalDiscount) || isNaN(discountPassedOn)) {
-                document.getElementById('result').textContent = "Please enter valid numbers in all fields.";
+                document.getElementById('result').innerHTML = "<p>Please enter valid numbers in all fields.</p>";
                 return;
             }
 
@@ -78,10 +91,28 @@
             const payableAmount = payingAmount - discountPassedOnValue;
 
             document.getElementById('result').innerHTML = `
-                Total Discount: ₹${totalDiscountValue.toFixed(2)}<br>
-                Discount Passed On: ₹${discountPassedOnValue.toFixed(2)}<br>
-                Commission: ₹${commissionValue.toFixed(2)}<br>
-                Payable Amount by Customer: ₹${payableAmount.toFixed(2)}
+                <table class="result-table">
+                    <tr>
+                        <th>Description</th>
+                        <th>Amount</th>
+                    </tr>
+                    <tr>
+                        <td>Total Discount</td>
+                        <td>₹${totalDiscountValue.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td>Discount Passed On</td>
+                        <td>₹${discountPassedOnValue.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td>Commission</td>
+                        <td>₹${commissionValue.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td>Payable Amount by Customer</td>
+                        <td>₹${payableAmount.toFixed(2)}</td>
+                    </tr>
+                </table>
             `;
         }
     </script>
