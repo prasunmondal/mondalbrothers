@@ -61,7 +61,7 @@
         <input type="number" id="payingAmount" placeholder="Enter paying amount">
 
         <label for="totalDiscount">Total Discount %:</label>
-        <input type="number" id="totalDiscount" placeholder="Enter total discount %">
+        <input type="number" id="totalDiscount" value="10" placeholder="Enter total discount %">
 
         <label for="discountPassedOn">Discount Passed On %:</label>
         <input type="number" id="discountPassedOn" placeholder="Enter discount passed on %">
@@ -91,11 +91,13 @@
             const totalDiscountValue = (payingAmount * totalDiscount) / 100;
             const discountPassedOnValue = (payingAmount * discountPassedOn) / 100;
             const commissionValue = (payingAmount * commission) / 100;
+            const payableAmount = payingAmount - discountPassedOnValue;
 
             document.getElementById('result').innerHTML = `
                 Total Discount: ₹${totalDiscountValue.toFixed(2)}<br>
                 Discount Passed On: ₹${discountPassedOnValue.toFixed(2)}<br>
-                Commission: ₹${commissionValue.toFixed(2)}
+                Commission: ₹${commissionValue.toFixed(2)}<br>
+                Payable Amount by Customer: ₹${payableAmount.toFixed(2)}
             `;
         }
     </script>
