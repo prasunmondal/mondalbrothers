@@ -13,16 +13,16 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             background-color: #f4f4f9;
         }
         .calculator {
-            border: 1px solid #ccc;
-            border-radius: 10px;
             padding: 20px;
             background: #fff;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 300px;
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
         }
         .calculator input[type="number"] {
             margin: 5px 0;
@@ -38,7 +38,7 @@
             font-size: 1.2em;
             color: #333;
             width: 100%;
-            overflow-x: auto;
+            overflow-x: auto; 
         }
         table {
             width: 100%;
