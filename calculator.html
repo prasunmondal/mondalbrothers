@@ -38,18 +38,20 @@
             font-size: 1.2em;
             color: #333;
         }
-        .result-table {
-            margin-top: 20px;
-            border-collapse: collapse;
+        table {
             width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
         }
-        .result-table th, .result-table td {
+        table, th, td {
             border: 1px solid #ccc;
+        }
+        th, td {
             padding: 8px;
             text-align: left;
         }
-        .result-table th {
-            background-color: #f9f9f9;
+        th {
+            background-color: #f0f0f0;
         }
     </style>
 </head>
@@ -91,25 +93,27 @@
             const payableAmount = payingAmount - discountPassedOnValue;
 
             document.getElementById('result').innerHTML = `
-                <table class="result-table">
+                <table>
                     <tr>
-                        <th>Description</th>
-                        <th>Amount</th>
+                        <th colspan="2">Discount Details</th>
+                        <th colspan="2">Payment Details</th>
                     </tr>
                     <tr>
-                        <td>Total Discount</td>
+                        <td>Total Discount:</td>
                         <td>₹${totalDiscountValue.toFixed(2)}</td>
+                        <td>Total Amount:</td>
+                        <td>₹${payingAmount.toFixed(2)}</td>
                     </tr>
                     <tr>
-                        <td>Discount Passed On</td>
+                        <td>Discount Passed On:</td>
+                        <td>₹${discountPassedOnValue.toFixed(2)}</td>
+                        <td>Discount Passed On:</td>
                         <td>₹${discountPassedOnValue.toFixed(2)}</td>
                     </tr>
                     <tr>
-                        <td>Commission</td>
+                        <td>Commission:</td>
                         <td>₹${commissionValue.toFixed(2)}</td>
-                    </tr>
-                    <tr>
-                        <td>Payable Amount by Customer</td>
+                        <td>Payable Amount by Customer:</td>
                         <td>₹${payableAmount.toFixed(2)}</td>
                     </tr>
                 </table>
