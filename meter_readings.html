@@ -67,7 +67,9 @@
                     row.innerHTML = `
                         <td>${entry[""]}</td>
                         <td><input type="number" id="initial${index}" value="${entry.initialReading}" disabled /></td>
-                        <td><input type="number" id="current${index}" value="${entry.currentReading}" oninput="recalculate(${index})" /></td>
+                        <td>
+                            <input type="number" id="current${index}" placeholder="${entry.currentReading}" oninput="recalculate(${index})" />
+                        </td>
                         <td id="difference${index}">0</td>
                         <td><input type="number" id="targetDifference${index}" value="${entry.targetReading}" disabled /></td>
                         <td id="units${index}">0</td>
@@ -86,8 +88,10 @@
         // Function to recalculate differences and units required
         function recalculate(index) {
             const initial = parseFloat(document.getElementById(`initial${index}`).value) || 0;
-            const current = parseFloat(document.getElementById(`current${index}`).value) || 0;
             const targetDifference = parseFloat(document.getElementById(`targetDifference${index}`).value) || 0;
+
+            const currentInput = document.getElementById(`current${index}`);
+            const current = currentInput.value ? parseFloat(currentInput.value) : parseFloat(currentInput.placeholder) || 0;
 
             const difference = current - initial;
             const unitsRequired = targetDifference - difference;
