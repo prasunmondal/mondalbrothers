@@ -90,7 +90,7 @@
             const targetDifference = parseFloat(document.getElementById(`targetDifference${index}`).value) || 0;
 
             const difference = current - initial;
-            const unitsRequired = targetDifference - current;
+            const unitsRequired = targetDifference - difference;
 
             document.getElementById(`difference${index}`).innerText = difference;
             document.getElementById(`units${index}`).innerText = unitsRequired;
