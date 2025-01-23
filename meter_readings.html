@@ -49,7 +49,7 @@
                 <th>Initial Reading</th>
                 <th>Current Reading</th>
                 <th>Difference</th>
-                <th>Target Reading</th>
+                <th>Target Difference</th>
                 <th>Units Required</th>
             </tr>
         </table>
@@ -74,6 +74,7 @@
                 const table = document.getElementById('meterTable');
 
                 data.forEach((entry, index) => {
+                    const targetDifference = entry.targetReading - entry.initialReading; // Calculate target difference
                     const row = document.createElement('tr');
 
                     row.innerHTML = `
@@ -81,7 +82,7 @@
                         <td><input type="number" id="initial${index}" value="${entry.initialReading}" disabled /></td>
                         <td><input type="number" id="current${index}" value="${entry.currentReading}" /></td>
                         <td id="difference${index}"></td>
-                        <td><input type="number" id="target${index}" value="${entry.targetReading}" disabled /></td>
+                        <td><input type="number" id="targetDifference${index}" value="${targetDifference}" disabled /></td>
                         <td id="units${index}"></td>
                     `;
 
@@ -102,10 +103,10 @@
             rows.forEach((row, index) => {
                 const initial = document.getElementById(`initial${index}`).value;
                 const current = document.getElementById(`current${index}`).value;
-                const target = document.getElementById(`target${index}`).value;
+                const targetDifference = document.getElementById(`targetDifference${index}`).value;
 
                 const difference = current - initial;
-                const unitsRequired = initial + target - current;
+                const unitsRequired = targetDifference - difference;
 
                 document.getElementById(`difference${index}`).innerText = difference;
                 document.getElementById(`units${index}`).innerText = unitsRequired;
