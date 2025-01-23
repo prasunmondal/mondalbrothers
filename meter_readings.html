@@ -43,46 +43,14 @@
     <h1>Meter Reading Difference</h1>
 
     <form id="meterForm">
-        <table>
+        <table id="meterTable">
             <tr>
                 <th>Name</th>
                 <th>Initial Reading</th>
                 <th>Current Reading</th>
                 <th>Difference</th>
-                <th>Target Difference</th>
+                <th>Target Reading</th>
                 <th>Units Required</th>
-            </tr>
-            <tr>
-                <td>Pranab Mondal</td>
-                <td><input type="number" id="initial1" value="1083" /></td>
-                <td><input type="number" id="current1" /></td>
-                <td id="difference1"></td>
-                <td><input type="number" id="target1" value="95" /></td>
-                <td id="units1"></td>
-            </tr>
-            <tr>
-                <td>Prabir Mondal</td>
-                <td><input type="number" id="initial2" value="12278" /></td>
-                <td><input type="number" id="current2" /></td>
-                <td id="difference2"></td>
-                <td><input type="number" id="target2" value="118" /></td>
-                <td id="units2"></td>
-            </tr>
-            <tr>
-                <td>Ramkinkar Mondal</td>
-                <td><input type="number" id="initial3" value="6107" /></td>
-                <td><input type="number" id="current3" /></td>
-                <td id="difference3"></td>
-                <td><input type="number" id="target3" value="15" /></td>
-                <td id="units3"></td>
-            </tr>
-            <tr>
-                <td>Dokan</td>
-                <td><input type="number" id="initial4" value="3443" /></td>
-                <td><input type="number" id="current4" /></td>
-                <td id="difference4"></td>
-                <td><input type="number" id="target4" value="80" /></td>
-                <td id="units4"></td>
             </tr>
         </table>
         <br>
@@ -90,30 +58,58 @@
     </form>
 
     <script>
+        // API URL and Form Data
+        const apiUrl = 'https://script.google.com/macros/s/AKfycby0rORN4PWBqs2XR2JFTlMHBA2kphA7A8LLrAQ40yF8aiXveEa1cqUJA-glH36VdRZ0Pg/exec';
+        const formData = new FormData();
+        formData.append('operations', '[{"opCode":"FETCH_ALL","sheetId":"1VYrAZxWXE4bNA6HjoBWbGS17rQxaMgjvnrIUzopnHdY","tabName":"apiData","opId":"04912489-167e-4048-813f-8a14ea48f6c5-1737648761099"}]');
+
+        // Function to fetch data from the API
+        async function fetchData() {
+            try {
+                const response = await fetch(apiUrl, { method: 'POST', body: formData });
+                const apiResponse = await response.json();
+                const data = apiResponse[0].content;
+
+                // Populate the table with API data
+                const table = document.getElementById('meterTable');
+
+                data.forEach((entry, index) => {
+                    const row = document.createElement('tr');
+
+                    row.innerHTML = `
+                        <td>${entry[""]}</td>
+                        <td><input type="number" id="initial${index}" value="${entry.initialReading}" disabled /></td>
+                        <td><input type="number" id="current${index}" value="${entry.currentReading}" /></td>
+                        <td id="difference${index}"></td>
+                        <td><input type="number" id="target${index}" value="${entry.targetReading}" disabled /></td>
+                        <td id="units${index}"></td>
+                    `;
+
+                    table.appendChild(row);
+                });
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        // Call the fetchData function on page load
+        window.onload = fetchData;
+
+        // Function to calculate differences and units required
         function calculateDifferences() {
-            let initial1 = document.getElementById('initial1').value;
-            let current1 = document.getElementById('current1').value;
-            let target1 = document.getElementById('target1').value;
-            document.getElementById('difference1').innerText = current1 - initial1;
-            document.getElementById('units1').innerText = target1 - (current1 - initial1);
+            const rows = document.querySelectorAll("#meterTable tr:not(:first-child)");
 
-            let initial2 = document.getElementById('initial2').value;
-            let current2 = document.getElementById('current2').value;
-            let target2 = document.getElementById('target2').value;
-            document.getElementById('difference2').innerText = current2 - initial2;
-            document.getElementById('units2').innerText = target2 - (current2 - initial2);
+            rows.forEach((row, index) => {
+                const initial = document.getElementById(`initial${index}`).value;
+                const current = document.getElementById(`current${index}`).value;
+                const target = document.getElementById(`target${index}`).value;
 
-            let initial3 = document.getElementById('initial3').value;
-            let current3 = document.getElementById('current3').value;
-            let target3 = document.getElementById('target3').value;
-            document.getElementById('difference3').innerText = current3 - initial3;
-            document.getElementById('units3').innerText = target3 - (current3 - initial3);
+                const difference = current - initial;
+                const unitsRequired = target - current;
 
-            let initial4 = document.getElementById('initial4').value;
-            let current4 = document.getElementById('current4').value;
-            let target4 = document.getElementById('target4').value;
-            document.getElementById('difference4').innerText = current4 - initial4;
-            document.getElementById('units4').innerText = target4 - (current4 - initial4);
+                document.getElementById(`difference${index}`).innerText = difference;
+                document.getElementById(`units${index}`).innerText = unitsRequired;
+            });
         }
     </script>
 
