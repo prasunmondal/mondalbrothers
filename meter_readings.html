@@ -105,7 +105,7 @@
                 const target = document.getElementById(`target${index}`).value;
 
                 const difference = current - initial;
-                const unitsRequired = target - current;
+                const unitsRequired = initial + target - current;
 
                 document.getElementById(`difference${index}`).innerText = difference;
                 document.getElementById(`units${index}`).innerText = unitsRequired;
