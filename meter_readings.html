@@ -26,16 +26,6 @@
             padding: 8px;
             width: 100px;
         }
-        button {
-            padding: 8px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
     </style>
 </head>
 <body>
@@ -53,8 +43,6 @@
                 <th>Units Required</th>
             </tr>
         </table>
-        <br>
-        <button type="button" onclick="calculateDifferences()">Calculate Differences</button>
     </form>
 
     <script>
@@ -74,44 +62,42 @@
                 const table = document.getElementById('meterTable');
 
                 data.forEach((entry, index) => {
-                    const targetDifference = entry.targetReading - entry.initialReading; // Calculate target difference
                     const row = document.createElement('tr');
 
                     row.innerHTML = `
                         <td>${entry[""]}</td>
                         <td><input type="number" id="initial${index}" value="${entry.initialReading}" disabled /></td>
-                        <td><input type="number" id="current${index}" value="${entry.currentReading}" /></td>
-                        <td id="difference${index}"></td>
-                        <td><input type="number" id="targetDifference${index}" value="${targetDifference}" disabled /></td>
-                        <td id="units${index}"></td>
+                        <td><input type="number" id="current${index}" value="${entry.currentReading}" oninput="recalculate(${index})" /></td>
+                        <td id="difference${index}">0</td>
+                        <td><input type="number" id="targetDifference${index}" value="${entry.targetReading}" disabled /></td>
+                        <td id="units${index}">0</td>
                     `;
 
                     table.appendChild(row);
+
+                    // Initial calculation
+                    recalculate(index);
                 });
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         }
 
+        // Function to recalculate differences and units required
+        function recalculate(index) {
+            const initial = parseFloat(document.getElementById(`initial${index}`).value) || 0;
+            const current = parseFloat(document.getElementById(`current${index}`).value) || 0;
+            const targetDifference = parseFloat(document.getElementById(`targetDifference${index}`).value) || 0;
+
+            const difference = current - initial;
+            const unitsRequired = targetDifference - current;
+
+            document.getElementById(`difference${index}`).innerText = difference;
+            document.getElementById(`units${index}`).innerText = unitsRequired;
+        }
+
         // Call the fetchData function on page load
         window.onload = fetchData;
-
-        // Function to calculate differences and units required
-        function calculateDifferences() {
-            const rows = document.querySelectorAll("#meterTable tr:not(:first-child)");
-
-            rows.forEach((row, index) => {
-                const initial = document.getElementById(`initial${index}`).value;
-                const current = document.getElementById(`current${index}`).value;
-                const targetDifference = document.getElementById(`targetDifference${index}`).value;
-
-                const difference = current - initial;
-                const unitsRequired = targetDifference - difference;
-
-                document.getElementById(`difference${index}`).innerText = difference;
-                document.getElementById(`units${index}`).innerText = unitsRequired;
-            });
-        }
     </script>
 
 </body>
