@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meter Reading Difference</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        input {
+            margin: 5px 0;
+            padding: 8px;
+            width: 100px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Meter Reading Difference</h1>
+
+    <form id="meterForm">
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Initial Reading</th>
+                <th>Current Reading</th>
+                <th>Difference</th>
+            </tr>
+            <tr>
+                <td>John Doe</td>
+                <td><input type="number" id="initial1" /></td>
+                <td><input type="number" id="current1" /></td>
+                <td id="difference1"></td>
+            </tr>
+            <tr>
+                <td>Jane Smith</td>
+                <td><input type="number" id="initial2" /></td>
+                <td><input type="number" id="current2" /></td>
+                <td id="difference2"></td>
+            </tr>
+            <tr>
+                <td>Bob Johnson</td>
+                <td><input type="number" id="initial3" /></td>
+                <td><input type="number" id="current3" /></td>
+                <td id="difference3"></td>
+            </tr>
+            <tr>
+                <td>Alice Brown</td>
+                <td><input type="number" id="initial4" /></td>
+                <td><input type="number" id="current4" /></td>
+                <td id="difference4"></td>
+            </tr>
+        </table>
+        <br>
+        <button type="button" onclick="calculateDifferences()">Calculate Differences</button>
+    </form>
+
+    <script>
+        function calculateDifferences() {
+            let initial1 = document.getElementById('initial1').value;
+            let current1 = document.getElementById('current1').value;
+            document.getElementById('difference1').innerText = current1 - initial1;
+
+            let initial2 = document.getElementById('initial2').value;
+            let current2 = document.getElementById('current2').value;
+            document.getElementById('difference2').innerText = current2 - initial2;
+
+            let initial3 = document.getElementById('initial3').value;
+            let current3 = document.getElementById('current3').value;
+            document.getElementById('difference3').innerText = current3 - initial3;
+
+            let initial4 = document.getElementById('initial4').value;
+            let current4 = document.getElementById('current4').value;
+            document.getElementById('difference4').innerText = current4 - initial4;
+        }
+    </script>
+
+</body>
+</html>
