@@ -13,6 +13,8 @@
         th { background-color: #f4f4f4; }
         .highlight { background-color: yellow; font-weight: bold; }
         #loading { display: none; font-size: 14px; color: blue; }
+        .total-row { font-weight: bold; background-color: #f4f4f4; }
+        .total-col { font-weight: bold; background-color: #f4f4f4; }
     </style>
 </head>
 <body>
@@ -26,7 +28,7 @@
         <input type="date" class="date-picker">
         <input type="date" class="date-picker">
     </div>
-    <button onclick="addDateInput()">+ Add Date</button>
+    <button onclick="addDateInput()">+ Add Date34</button>
     <button onclick="fetchData()">Get Delivered KG</button>
     
     <p id="loading">Fetching data...</p>
@@ -36,11 +38,18 @@
             <tr id="tableHeader">
                 <th>Customer Name</th>
                 <!-- Dates will be inserted dynamically here -->
+                <th>Total</th>
             </tr>
         </thead>
         <tbody>
             <!-- Data will be inserted here dynamically -->
         </tbody>
+        <tfoot>
+            <tr id="tableFooter">
+                <th>Total</th>
+                <!-- Column sums will be inserted here dynamically -->
+            </tr>
+        </tfoot>
     </table>
 </div>
 
@@ -101,6 +110,7 @@
             }
 
             let customerData = {};
+            let dateSums = {};
 
             filteredData.forEach(entry => {
                 let date = formatDate(entry.timestamp);
@@ -110,10 +120,12 @@
                 if (!customerData[name]) {
                     customerData[name] = {};
                 }
-                customerData[name][date] = deliveredKg;
+                customerData[name][date] = (customerData[name][date] || 0) + deliveredKg;
+
+                dateSums[date] = (dateSums[date] || 0) + deliveredKg;
             });
 
-            updateTable(formattedSelectedDates, customerData);
+            updateTable(formattedSelectedDates, customerData, dateSums);
 
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -123,25 +135,44 @@
         }
     }
 
-    function updateTable(selectedDates, customerData) {
+    function updateTable(selectedDates, customerData, dateSums) {
         let tableHeader = document.getElementById("tableHeader");
         let tableBody = document.querySelector("#resultTable tbody");
+        let tableFooter = document.getElementById("tableFooter");
 
         tableHeader.innerHTML = "<th>Customer Name</th>"; // Reset header
         selectedDates.forEach(date => {
             tableHeader.innerHTML += `<th>${date}</th>`;
         });
+        tableHeader.innerHTML += `<th>Total</th>`; // Row sum column
 
         tableBody.innerHTML = ""; // Clear previous data
+        let grandTotal = 0;
 
         Object.keys(customerData).forEach(customer => {
+            let rowSum = 0;
             let row = `<tr><td>${customer}</td>`;
+
             selectedDates.forEach(date => {
-                row += `<td>${customerData[customer][date] || 0}</td>`;
+                let deliveredKg = customerData[customer][date] || 0;
+                row += `<td>${deliveredKg}</td>`;
+                rowSum += deliveredKg;
             });
-            row += "</tr>";
+
+            row += `<td class="total-row">${rowSum}</td>`; // Append row sum
             tableBody.innerHTML += row;
+            grandTotal += rowSum;
         });
+
+        tableFooter.innerHTML = `<th>Total</th>`;
+        let columnTotalRow = "";
+
+        selectedDates.forEach(date => {
+            columnTotalRow += `<td class="total-col">${dateSums[date] || 0}</td>`;
+        });
+
+        columnTotalRow += `<td class="total-col">${grandTotal}</td>`; // Grand total
+        tableFooter.innerHTML += columnTotalRow;
 
         document.getElementById("resultTable").style.display = "table"; // Show table
     }
