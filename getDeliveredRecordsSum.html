@@ -56,6 +56,11 @@
         container.appendChild(input);
     }
 
+    function formatDate(dateString) {
+        let date = new Date(dateString);
+        return date.toISOString().split('T')[0]; // Extract YYYY-MM-DD from timestamp
+    }
+
     async function fetchData() {
         let selectedDates = [...document.querySelectorAll(".date-picker")]
             .map(input => input.value)
@@ -85,12 +90,14 @@
             let tableBody = document.querySelector("#resultTable tbody");
             tableBody.innerHTML = ""; // Clear previous data
 
-            let selectedFormattedDates = selectedDates.map(date => new Date(date).toLocaleDateString("en-US")); // Convert to M/D/YYYY
+            let formattedSelectedDates = selectedDates.map(date => formatDate(date)); // Convert to YYYY-MM-DD
 
             data.forEach(entry => {
-                let isHighlighted = selectedFormattedDates.includes(entry.timestamp);
+                let entryDate = formatDate(entry.timestamp); // Convert API timestamp to YYYY-MM-DD
+                let isHighlighted = formattedSelectedDates.includes(entryDate);
+
                 let row = `<tr class="${isHighlighted ? 'highlight' : ''}">
-                    <td>${entry.timestamp}</td>
+                    <td>${entryDate}</td>
                     <td>${entry.deliveredKg}</td>
                 </tr>`;
                 tableBody.innerHTML += row;
