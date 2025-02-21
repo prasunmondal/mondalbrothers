@@ -8,7 +8,7 @@
         body { font-family: Arial, sans-serif; margin: 20px; }
         .container { max-width: 1000px; margin: auto; text-align: center; }
         input { margin: 5px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; display: none; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
         th { background-color: #f4f4f4; }
         .highlight { background-color: yellow; font-weight: bold; }
@@ -31,7 +31,6 @@
     
     <p id="loading">Fetching data...</p>
 
-    <h3>All Records</h3>
     <table id="resultTable">
         <thead>
             <tr>
@@ -47,7 +46,7 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Data will be inserted here -->
+            <!-- Matching data will be inserted here -->
         </tbody>
     </table>
 </div>
@@ -65,7 +64,7 @@
 
     function formatDate(dateString) {
         let date = new Date(dateString);
-        return date.toISOString().split('T')[0]; // Extract YYYY-MM-DD
+        return date.toISOString().split('T')[0]; // Convert to YYYY-MM-DD
     }
 
     async function fetchData() {
@@ -79,6 +78,7 @@
         }
 
         document.getElementById("loading").style.display = "block"; // Show loading text
+        document.getElementById("resultTable").style.display = "none"; // Hide table initially
 
         const formData = new FormData();
         formData.append('operations', '[{"opCode":"FETCH_ALL","sheetId":"11TA2pPlxqajVwkPEigNMPNfsV-12CExxmySk1OMw_v8","tabName":"deliveries","opId":"mbros-github-site"}]');
@@ -96,21 +96,23 @@
             }
 
             const data = result[0].content || []; // Extract content from API response
-
             console.log("Fetched Data:", data);
 
             let tableBody = document.querySelector("#resultTable tbody");
             tableBody.innerHTML = ""; // Clear previous data
 
-            console.log("checkpoint2");
             let formattedSelectedDates = selectedDates.map(date => formatDate(date)); // Convert to YYYY-MM-DD
-            console.log("checkpoint3");
-            data.forEach(entry => {
-                console.log("checkpoint4");
-                let entryDate = formatDate(entry.timestamp); // Convert API timestamp to YYYY-MM-DD
-                let isHighlighted = formattedSelectedDates.includes(entryDate);
 
-                let row = `<tr class="${isHighlighted ? 'highlight' : ''}">
+            let matchingRecords = data.filter(entry => formattedSelectedDates.includes(formatDate(entry.timestamp)));
+
+            if (matchingRecords.length === 0) {
+                alert("No matching records found.");
+                return;
+            }
+
+            matchingRecords.forEach(entry => {
+                let entryDate = formatDate(entry.timestamp);
+                let row = `<tr class="highlight">
                     <td>${entryDate}</td>
                     <td>${entry.name || '-'}</td>
                     <td>${entry.deliveredKg || '-'}</td>
@@ -123,6 +125,8 @@
                 </tr>`;
                 tableBody.innerHTML += row;
             });
+
+            document.getElementById("resultTable").style.display = "table"; // Show table after inserting rows
 
         } catch (error) {
             console.error("Error fetching data:", error);
