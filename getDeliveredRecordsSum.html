@@ -102,9 +102,11 @@
             let tableBody = document.querySelector("#resultTable tbody");
             tableBody.innerHTML = ""; // Clear previous data
 
+            console.log("checkpoint2");
             let formattedSelectedDates = selectedDates.map(date => formatDate(date)); // Convert to YYYY-MM-DD
-
+            console.log("checkpoint3");
             data.forEach(entry => {
+                console.log("checkpoint4");
                 let entryDate = formatDate(entry.timestamp); // Convert API timestamp to YYYY-MM-DD
                 let isHighlighted = formattedSelectedDates.includes(entryDate);
 
