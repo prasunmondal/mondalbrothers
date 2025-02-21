@@ -6,7 +6,7 @@
     <title>Delivered KG Report</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
-        .container { max-width: 800px; margin: auto; text-align: center; }
+        .container { max-width: 1000px; margin: auto; text-align: center; }
         input { margin: 5px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
@@ -36,7 +36,14 @@
         <thead>
             <tr>
                 <th>Date</th>
+                <th>Name</th>
                 <th>Delivered KG</th>
+                <th>Delivered PC</th>
+                <th>Deliver Amount</th>
+                <th>Rate</th>
+                <th>Khata Balance</th>
+                <th>Profit</th>
+                <th>Profit %</th>
             </tr>
         </thead>
         <tbody>
@@ -58,7 +65,7 @@
 
     function formatDate(dateString) {
         let date = new Date(dateString);
-        return date.toISOString().split('T')[0]; // Extract YYYY-MM-DD from timestamp
+        return date.toISOString().split('T')[0]; // Extract YYYY-MM-DD
     }
 
     async function fetchData() {
@@ -83,7 +90,12 @@
             });
 
             const result = await response.json();
-            const data = result.data || []; // Ensure data is an array
+            if (!result || !result.length || result[0].statusCode !== 200) {
+                alert("Invalid response from API");
+                return;
+            }
+
+            const data = result[0].content || []; // Extract content from API response
 
             console.log("Fetched Data:", data);
 
@@ -98,7 +110,14 @@
 
                 let row = `<tr class="${isHighlighted ? 'highlight' : ''}">
                     <td>${entryDate}</td>
-                    <td>${entry.deliveredKg}</td>
+                    <td>${entry.name || '-'}</td>
+                    <td>${entry.deliveredKg || '-'}</td>
+                    <td>${entry.deliveredPc || '-'}</td>
+                    <td>${entry.deliverAmount || '-'}</td>
+                    <td>${entry.rate || '-'}</td>
+                    <td>${entry.khataBalance || '-'}</td>
+                    <td>${entry.profit || '-'}</td>
+                    <td>${entry.profitPercent || '-'}</td>
                 </tr>`;
                 tableBody.innerHTML += row;
             });
