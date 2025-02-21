@@ -26,27 +26,20 @@
         <input type="date" class="date-picker">
         <input type="date" class="date-picker">
     </div>
-    <button onclick="addDateInput()">+ Add Date33</button>
+    <button onclick="addDateInput()">+ Add Date</button>
     <button onclick="fetchData()">Get Delivered KG</button>
     
     <p id="loading">Fetching data...</p>
 
     <table id="resultTable">
         <thead>
-            <tr>
-                <th>Date</th>
-                <th>Name</th>
-                <th>Delivered KG</th>
-                <th>Delivered PC</th>
-                <th>Deliver Amount</th>
-                <th>Rate</th>
-                <th>Khata Balance</th>
-                <th>Profit</th>
-                <th>Profit %</th>
+            <tr id="tableHeader">
+                <th>Customer Name</th>
+                <!-- Dates will be inserted dynamically here -->
             </tr>
         </thead>
         <tbody>
-            <!-- Matching data will be inserted here -->
+            <!-- Data will be inserted here dynamically -->
         </tbody>
     </table>
 </div>
@@ -98,35 +91,29 @@
             const data = result[0].content || []; // Extract content from API response
             console.log("Fetched Data:", data);
 
-            let tableBody = document.querySelector("#resultTable tbody");
-            tableBody.innerHTML = ""; // Clear previous data
-
             let formattedSelectedDates = selectedDates.map(date => formatDate(date)); // Convert to YYYY-MM-DD
 
-            let matchingRecords = data.filter(entry => formattedSelectedDates.includes(formatDate(entry.timestamp)));
+            let filteredData = data.filter(entry => formattedSelectedDates.includes(formatDate(entry.timestamp)));
 
-            if (matchingRecords.length === 0) {
+            if (filteredData.length === 0) {
                 alert("No matching records found.");
                 return;
             }
 
-            matchingRecords.forEach(entry => {
-                let entryDate = formatDate(entry.timestamp);
-                let row = `<tr class="highlight">
-                    <td>${entryDate}</td>
-                    <td>${entry.name || '-'}</td>
-                    <td>${entry.deliveredKg || '-'}</td>
-                    <td>${entry.deliveredPc || '-'}</td>
-                    <td>${entry.deliverAmount || '-'}</td>
-                    <td>${entry.rate || '-'}</td>
-                    <td>${entry.khataBalance || '-'}</td>
-                    <td>${entry.profit || '-'}</td>
-                    <td>${entry.profitPercent || '-'}</td>
-                </tr>`;
-                tableBody.innerHTML += row;
+            let customerData = {};
+
+            filteredData.forEach(entry => {
+                let date = formatDate(entry.timestamp);
+                let name = entry.name || "Unknown";
+                let deliveredKg = entry.deliveredKg || 0;
+
+                if (!customerData[name]) {
+                    customerData[name] = {};
+                }
+                customerData[name][date] = deliveredKg;
             });
 
-            document.getElementById("resultTable").style.display = "table"; // Show table after inserting rows
+            updateTable(formattedSelectedDates, customerData);
 
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -134,6 +121,29 @@
         } finally {
             document.getElementById("loading").style.display = "none"; // Hide loading text
         }
+    }
+
+    function updateTable(selectedDates, customerData) {
+        let tableHeader = document.getElementById("tableHeader");
+        let tableBody = document.querySelector("#resultTable tbody");
+
+        tableHeader.innerHTML = "<th>Customer Name</th>"; // Reset header
+        selectedDates.forEach(date => {
+            tableHeader.innerHTML += `<th>${date}</th>`;
+        });
+
+        tableBody.innerHTML = ""; // Clear previous data
+
+        Object.keys(customerData).forEach(customer => {
+            let row = `<tr><td>${customer}</td>`;
+            selectedDates.forEach(date => {
+                row += `<td>${customerData[customer][date] || 0}</td>`;
+            });
+            row += "</tr>";
+            tableBody.innerHTML += row;
+        });
+
+        document.getElementById("resultTable").style.display = "table"; // Show table
     }
 </script>
 
