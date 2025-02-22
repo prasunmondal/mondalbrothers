@@ -73,11 +73,6 @@
             .map(input => input.value)
             .filter(date => date !== "");
 
-        if (selectedDates.length < 4) {
-            alert("Please select at least 4 dates.");
-            return;
-        }
-
         document.getElementById("loading").style.display = "block"; // Show loading text
         document.getElementById("resultTable").style.display = "none"; // Hide table initially
 
