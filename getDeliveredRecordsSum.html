@@ -4,120 +4,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delivered KG Report</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .container { max-width: 1000px; margin: auto; text-align: center; }
-        input { margin: 5px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; display: none; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        th { background-color: #f4f4f4; }
-        .highlight { background-color: yellow; font-weight: bold; }
-        #loading { display: none; font-size: 14px; color: blue; }
-        .total-row { font-weight: bold; background-color: #f4f4f4; }
-        .total-col { font-weight: bold; background-color: #f4f4f4; }
-    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const apiUrl = 'https://script.google.com/macros/s/AKfycby0rORN4PWBqs2XR2JFTlMHBA2kphA7A8LLrAQ40yF8aiXveEa1cqUJA-glH36VdRZ0Pg/exec';
+            
+            document.getElementById("fetchData").addEventListener("click", fetchData);
+
+            function fetchData() {
+                const selectedDates = Array.from(document.querySelectorAll(".date-input"))
+                    .map(input => input.value).filter(date => date);
+                
+                if (selectedDates.length === 0) {
+                    alert("Please select at least one date");
+                    return;
+                }
+                
+                fetch(apiUrl, {
+                    method: 'POST',
+                    body: new FormData()
+                })
+                .then(response => response.json())
+                .then(data => processData(data, selectedDates))
+                .catch(error => console.error('Error fetching data:', error));
+            }
+
+            function processData(data, selectedDates) {
+                const formattedDates = selectedDates.map(date => {
+                    const [year, month, day] = date.split('-');
+                    return `${parseInt(month)}/${parseInt(day)}/${year}`;
+                });
+                
+                const convertedDates = selectedDates.map(date => {
+                    const istDate = new Date(`${date}T00:00:00Z`);
+                    return istDate.toISOString().split('T')[0];
+                });
+                
+                const records = data[0].content.filter(record => {
+                    const recordDate = new Date(record.timestamp);
+                    const istDate = new Date(recordDate.getTime() + (5.5 * 60 * 60 * 1000));
+                    const formattedRecordDate = istDate.toISOString().split('T')[0];
+                    return convertedDates.includes(formattedRecordDate);
+                });
+
+                let report = {};
+                let dates = new Set();
+                
+                records.forEach(record => {
+                    const recordDate = new Date(record.timestamp);
+                    const istDate = new Date(recordDate.getTime() + (5.5 * 60 * 60 * 1000));
+                    const formattedRecordDate = istDate.toISOString().split('T')[0];
+                    
+                    if (!report[record.name]) {
+                        report[record.name] = {};
+                    }
+                    report[record.name][formattedRecordDate] = (report[record.name][formattedRecordDate] || 0) + parseFloat(record.deliveredKg.toFixed(3));
+                    dates.add(formattedRecordDate);
+                });
+                
+                renderTable(report, Array.from(dates).sort());
+            }
+
+            function renderTable(report, dates) {
+                let table = `<table border="1"><tr><th>Customer</th>`;
+                dates.forEach(date => table += `<th>${date}</th>`);
+                table += `<th>Total</th></tr>`;
+
+                let columnSums = {};
+                dates.forEach(date => columnSums[date] = 0);
+                let grandTotal = 0;
+                
+                for (let customer in report) {
+                    let rowTotal = 0;
+                    table += `<tr><td>${customer}</td>`;
+                    dates.forEach(date => {
+                        let value = report[customer][date] || 0;
+                        table += `<td>${value.toFixed(3)}</td>`;
+                        rowTotal += value;
+                        columnSums[date] += value;
+                    });
+                    table += `<td>${rowTotal.toFixed(3)}</td></tr>`;
+                    grandTotal += rowTotal;
+                }
+                
+                table += `<tr><td><b>Total</b></td>`;
+                dates.forEach(date => table += `<td><b>${columnSums[date].toFixed(3)}</b></td>`);
+                table += `<td><b>${grandTotal.toFixed(3)}</b></td></tr>`;
+                
+                table += `</table>`;
+                document.getElementById("report").innerHTML = table;
+            }
+        });
+    </script>
 </head>
 <body>
-
-<div class="container">
     <h2>Delivered KG Report</h2>
-    <label>Select a date:</label>
-    <input type="date" id="date-picker">
-    <button onclick="fetchData()">Get Delivered KG</button>
-    
-    <p id="loading">Fetching data...</p>
-
-    <table id="resultTable">
-        <thead>
-            <tr id="tableHeader">
-                <th>Customer Name</th>
-                <th>Date</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-        <tfoot>
-            <tr id="tableFooter">
-                <th>Total</th>
-                <th></th>
-                <th></th>
-            </tr>
-        </tfoot>
-    </table>
-</div>
-
-<script>
-    const apiUrl = 'https://script.google.com/macros/s/AKfycby0rORN4PWBqs2XR2JFTlMHBA2kphA7A8LLrAQ40yF8aiXveEa1cqUJA-glH36VdRZ0Pg/exec';
-
-    function convertUTCtoIST(utcDateString) {
-        let date = new Date(utcDateString);
-        date.setHours(date.getHours() + 5, date.getMinutes() + 30);
-        return date.toISOString().split('T')[0];
-    }
-
-    async function fetchData() {
-        let selectedDate = document.getElementById("date-picker").value;
-        if (!selectedDate) {
-            alert("Please select a date.");
-            return;
-        }
-
-        document.getElementById("loading").style.display = "block";
-        document.getElementById("resultTable").style.display = "none";
-
-        const formData = new FormData();
-        formData.append('operations', '[{"opCode":"FETCH_ALL","sheetId":"11TA2pPlxqajVwkPEigNMPNfsV-12CExxmySk1OMw_v8","tabName":"deliveries","opId":"mbros-github-site"}]');
-
-        try {
-            const response = await fetch(apiUrl, { method: 'POST', body: formData });
-            const result = await response.json();
-            if (!result || !result.length || result[0].statusCode !== 200) {
-                alert("Invalid response from API");
-                return;
-            }
-
-            const data = result[0].content || [];
-            console.log("Fetched Data:", data);
-
-            let filteredData = data.filter(entry => convertUTCtoIST(entry.timestamp) === selectedDate);
-            if (filteredData.length === 0) {
-                alert("No matching records found.");
-                return;
-            }
-
-            let customerData = {};
-            let totalKg = 0;
-            
-            filteredData.forEach(entry => {
-                let name = entry.name || "Unknown";
-                let deliveredKg = parseFloat(entry.deliveredKg || 0).toFixed(3);
-                customerData[name] = (customerData[name] || 0) + parseFloat(deliveredKg);
-                totalKg += parseFloat(deliveredKg);
-            });
-
-            updateTable(selectedDate, customerData, totalKg);
-
-        } catch (error) {
-            console.error("Error fetching data:", error);
-            alert("Failed to fetch data. Please check the API.");
-        } finally {
-            document.getElementById("loading").style.display = "none";
-        }
-    }
-
-    function updateTable(selectedDate, customerData, totalKg) {
-        let tableBody = document.querySelector("#resultTable tbody");
-        let tableFooter = document.getElementById("tableFooter");
-
-        tableBody.innerHTML = "";
-        Object.keys(customerData).forEach(customer => {
-            tableBody.innerHTML += `<tr><td>${customer}</td><td>${selectedDate}</td><td class="total-row">${customerData[customer].toFixed(3)}</td></tr>`;
-        });
-
-        tableFooter.innerHTML = `<th>Total</th><th></th><th class="total-col">${totalKg.toFixed(3)}</th>`;
-        document.getElementById("resultTable").style.display = "table";
-    }
-</script>
-
+    <label>Select Date(s): </label>
+    <input type="date" class="date-input">
+    <button onclick="document.body.insertBefore(document.createElement('input'), document.getElementById('fetchData')).setAttribute('type', 'date');" >Add Date</button>
+    <button id="fetchData">Fetch Data</button>
+    <div id="report"></div>
 </body>
 </html>
