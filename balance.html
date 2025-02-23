@@ -78,7 +78,7 @@
             data.forEach(entry => {
                 let date = formatDateToIST(entry.timestamp);
                 let name = entry.name || "Unknown";
-                let balance = parseFloat(entry.balance || 0);
+                let balance = parseFloat(entry.khataBalance || 0);
 
                 if (!customerBalance[name] || date <= selectedDate) {
                     customerBalance[name] = balance;
