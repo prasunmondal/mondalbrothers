@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Balance Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: auto; text-align: center; }
+        input, button { margin: 10px; padding: 8px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; display: none; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Customer Balance Report</h2>
+    <label>Select a date:</label>
+    <input type="date" id="datePicker">
+    <button onclick="fetchBalance()">Get Balance</button>
+    
+    <p id="loading" style="display: none; color: blue;">Fetching data...</p>
+
+    <table id="balanceTable">
+        <thead>
+            <tr>
+                <th>Customer Name</th>
+                <th>Balance</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+    const apiUrl = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec';
+
+    async function fetchBalance() {
+        let selectedDate = document.getElementById("datePicker").value;
+        if (!selectedDate) {
+            alert("Please select a date");
+            return;
+        }
+        
+        document.getElementById("loading").style.display = "block";
+        document.getElementById("balanceTable").style.display = "none";
+
+        try {
+            const response = await fetch(apiUrl + '?date=' + selectedDate);
+            const result = await response.json();
+            
+            if (!result || result.length === 0) {
+                alert("No records found for the selected date.");
+                return;
+            }
+
+            let tableBody = document.querySelector("#balanceTable tbody");
+            tableBody.innerHTML = "";
+
+            result.forEach(entry => {
+                let row = `<tr><td>${entry.customerName}</td><td>${entry.balance}</td></tr>`;
+                tableBody.innerHTML += row;
+            });
+
+            document.getElementById("balanceTable").style.display = "table";
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            alert("Failed to fetch data. Please try again.");
+        } finally {
+            document.getElementById("loading").style.display = "none";
+        }
+    }
+</script>
+
+</body>
+</html>
