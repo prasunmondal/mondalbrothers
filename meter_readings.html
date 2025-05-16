@@ -42,6 +42,8 @@
                 <th>Target Units</th>
                 <th>Units Required</th>
                 <th>Estimated Bill</th>
+                <th>Last Bill Details</th>
+                <th>Pay Amount</th>
             </tr>
         </table>
     </form>
@@ -66,7 +68,7 @@
                     const row = document.createElement('tr');
 
                     row.innerHTML = `
-                        <td>${entry[""]}</td>
+                        <td>${entry.name}</td>
                         <td><input type="number" id="initial${index}" value="${entry.initialReading}" disabled /></td>
                         <td>
                             <input type="number" id="current${index}" placeholder="${entry.currentReading}" oninput="recalculate(${index})" />
@@ -75,6 +77,9 @@
                         <td><input type="number" id="targetUnits${index}" value="${entry.targetUnits}" disabled /></td>
                         <td id="units${index}">0</td>
                         <td id="estimatedBill${index}">${entry.EstimatedBill || 0}</td>
+                        <td><a href="https://s.wbsedcl.in/U/c?GFdvN3%E0%A5%A4" target="_blank">Rs ${entry.billAfterDiscount || 0}<br>
+                            Pay Date: ${entry.billPaymentDate}</a><br></td>
+                        <td id="payAmount${index}">${entry.payments || 0}</td>
                     `;
 
                     table.appendChild(row);
