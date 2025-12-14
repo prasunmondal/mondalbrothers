@@ -1,0 +1,29 @@
+.shiny-gold {
+    background: linear-gradient(180deg, #F5B041 0%, #D68910 100%);
+    background: linear-gradient(180deg, #F7C566 0%, #D68910 100%);
+    color: #fff;
+    border-radius: 0px 0px 14px 14px;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(214, 137, 16, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.shiny-gold::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 20%;
+    height: 100%;
+    background: linear-gradient(120deg, rgba(255,255,255,0.6), rgba(255,255,255,0));
+    transform: skewX(-20deg);
+    animation: shine 2.5s infinite;
+}
+
+@keyframes shine {
+    0% { left: -100%; }
+    60% { left: 120%; }
+    100% { left: 120%; }
+}

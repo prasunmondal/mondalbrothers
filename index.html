@@ -1,75 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mondal Brothers</title>
-<style>
-  body {
-    background-image: url('background.jpg'); /* Replace 'background.jpg' with the path to your background image */
-    background-size: cover;
-    background-position: center;
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-  }
-  .container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  }
-  .logo {
-    max-width: 100px;
-    margin-bottom: 20px;
-  }
-  .upi-button {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #f1c40f;
-    color: #000000;
-    text-decoration: none;
-    border-radius: 5px;
-    margin-top: 20px;
-  }
-  .card {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  .card h2 {
-    margin-top: 0;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 5px;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mondal Brothers Chicken Delivery Service</title>
+  <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="header-style.css" />
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f8b400">
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js");
+    }
+    function payNow() {
+      let amount = document.getElementById("amt").value;
+      let upi = `upi://pay?pa=prasun@okaxis&pn=Mondal%20Brothers&am=${amount}&cu=INR&tn=Payment`;
+      window.location.href = upi;
+    }
+  </script>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 </head>
 <body>
-<div class="container">
-<h1>Mondal Brothers.</h1>
-<p>Live Stock Chicken Distributor</p>
-</form>
 
-<div class="card" style="line-height:1em;">
-      <img src="gpay_business.jpeg" alt="QR Code for Mondal Brothers" width="100%"
-           height="100%" >
-      <h3>Pranab Mondal</h3>
-      <p><a style="color:Gray;">Contact: </a><a style="color:Gray;" href="tel:+919734075801">9734075801</a></p>
-      <p><a style="color:Gray;">Email:   </a> mbros.business@gmail.com</p>
-      <p><a style="color:Gray;">Website: </a>http://tinyurl.com/mondalbros</p>
-      <p style="line-height:1.2em">
-      	<a style="color:Gray;">Address:</a><a style="color:Black;"><br>         Mirga-Chatra, <br>Goghat,<br>         West Bengal - 712602.</a></p>
-    </div>
-    <a href="prsnmondal@ybl&pn=Prasun%20Mondal&tn=Payment%20to%20Mondal%20Brothers" class="upi-button">Pay Online / অনলাইন পেমেন্ট করুন</a>
-    <p style="color:Gray; line-height:1em">
-      <font size="-1">Paying to Prasun Mondal</font>
-      <br><font size="-1">Phone No: 9679004046</font>
-      <br><font size="-1">UPI ID: prsnmondal@ybl</font>
-    </p>
-</div>
+  <span id="copyToast" class="toast">Copied!</span>
+
+
+  <header class="hero shiny-gold">
+      <div class="logo-container">
+          <img src="images/mb-icon.png" alt="Mondal Brothers Poultry Logo" class="logo">
+      </div>
+    <h2>Mondal Brothers Poultry</h2>
+    <p>Exclusive for Shops | Premium Quality | Modern Accounting with Daily SMS</p>
+    <a href="tel:+919734075801" class="btn-call-rounded">📞 Call Now</a>
+      <br/>
+      <br/>
+      <a href="https://wa.me/919734075801?text=Hello,+I+would+like+to+register+as+a+new+customer+with+Mondal+Brothers."
+         class="btn-whatsapp" target="_blank">
+          Want to Sign Up? Click to WhatsApp Us!
+      </a>
+
+  </header>
+
+  <main>
+      <section class="accordion">
+
+          <!-- ================= PRE-BOOK ================= -->
+          <button class="accordion-header">🎉 Occasion Pre-Booking</button>
+          <div class="accordion-content">
+              <div class="card">
+
+                  <h3 class="section-title">📆 Pre-Register Upcoming Orders</h3>
+                  <p class="small-info">
+                      Add your occasion in advance — never forget later.
+                  </p>
+
+                  <form id="occasionForm" class="prebook-form">
+
+                      <input type="text" id="occName" placeholder="Your Name" required />
+                      <input type="text" id="occTitle" placeholder="Occasion Name"/>
+                      <input type="date" id="occDate" required />
+                      <input type="number" id="occQty" placeholder="Approx Quantity (Kg)" />
+
+                      <button type="button" class="primary-btn" onclick="sendOccasionBooking()">
+                          📲 Submit Pre-Booking via WhatsApp
+                      </button>
+
+                  </form>
+              </div>
+          </div>
+
+          <!-- ================= PAYMENT SECTION ================= -->
+          <button class="accordion-header">💰 Payment Options</button>
+          <div class="accordion-content">
+              <p class="title-text">Choose any payment method below</p>
+
+              <!-- UPI CARD -->
+              <div class="card">
+                  <h3 class="section-title">📲 UPI Payment</h3>
+
+                  <div class="qr-wrapper">
+                      <p class="text-center bold">Scan & Pay</p>
+                      <img src="images/payment-qr.jpeg" alt="Payment QR" class="qr-code" />
+
+                      <input type="number" id="amt" class="amount-input" placeholder="Enter Amount (Optional)" />
+                      <button class="primary-btn" onclick="openUPILink()">Pay via UPI App</button>
+                  </div>
+
+                  <ul class="details-list">
+
+                      <li class="details-label">Primary UPI</li>
+
+                      <li class="details-row lowlight">
+                          <span class="label">Name</span>
+                          <span class="value">Prasun Mondal</span>
+                          <i class="copy-icon"></i>
+                      </li>
+
+                      <li class="details-row">
+                          <span class="label">Number</span>
+                          <span id="upiNumber" class="value copyable">9679004046</span>
+                          <i class="fa-solid fa-copy copy-icon" onclick="copyToClipboard('upiNumber')"></i>
+                      </li>
+
+                      <li class="details-row">
+                          <span class="label">UPI ID</span>
+                          <span id="upiID" class="value copyable">prsnmondal@ybl</span>
+                          <i class="fa-solid fa-copy copy-icon" onclick="copyToClipboard('upiID')"></i>
+                      </li>
+
+                      <li class="details-label">Alternate UPI</li>
+
+                      <li class="details-row lowlight">
+                          <span class="label">Name</span>
+                          <span class="value">Mondal Brothers</span>
+                          <i class="copy-icon"></i>
+                      </li>
+
+                      <li class="details-row">
+                          <span class="label">UPI ID</span>
+                          <span id="altUPIID" class="value copyable">mondalbrothers@upi</span>
+                          <i class="fa-solid fa-copy copy-icon" onclick="copyToClipboard('altUPIID')"></i>
+                      </li>
+
+                  </ul>
+              </div>
+
+
+              <!-- BANK CARD -->
+              <div class="card">
+                  <h3 class="section-title">🏦 Bank Transfer Details</h3>
+                  <ul class="details-list">
+
+                      <li class="details-row lowlight">
+                          <span class="label">Bank Name</span>
+                          <span id="bankName" class="value">Canara Bank</span>
+                          <i class="copy-icon"></i>
+                      </li>
+
+                      <li class="details-row lowlight">
+                          <span class="label">Acc. Type</span>
+                          <span class="value">Current Account</span>
+                          <i class="copy-icon"></i>
+                      </li>
+
+                      <li class="details-row">
+                          <span class="label">Acc. Name</span>
+                          <span id="accHolder" class="value copyable">Mondal Brothers</span>
+                          <i class="fa-solid fa-copy copy-icon" onclick="copyToClipboard('accHolder')"></i>
+                      </li>
+
+                      <li class="details-row">
+                          <span class="label">Acc. Number</span>
+                          <span id="accNo" class="value copyable">4400201000088</span>
+                          <i class="fa-solid fa-copy copy-icon" onclick="copyToClipboard('accNo')"></i>
+                      </li>
+
+                      <li class="details-row">
+                          <span class="label">IFSC Code</span>
+                          <span id="ifsc" class="value copyable">CNRB0000000</span>
+                          <i class="fa-solid fa-copy copy-icon" onclick="copyToClipboard('ifsc')"></i>
+                      </li>
+
+                  </ul>
+              </div>
+          </div>
+
+          <!-- ================= RETAIL-CALCULATOR ================= -->
+          <a class="accordion-header" href="retail-calculator/retail-calculator.html">🎉 Retail Calculator</a>
+
+          <!-- ================= QUICK ORDER FORM ================= -->
+          <button class="accordion-header">🧾 Order for Tomorrow</button>
+          <div class="accordion-content">
+              <form id="orderForm" class="form-card">
+
+                  <input type="text" id="name" placeholder="Your Name" required />
+
+                  <div class="qty-row">
+                      <input type="number" id="kg" placeholder="Kg" />
+                      <span class="or-text">OR</span>
+                      <input type="number" id="pieces" placeholder="Pieces" />
+                  </div>
+
+                  <button type="submit" class="primary-btn">Send Order via WhatsApp</button>
+              </form>
+          </div>
+
+          <!-- ================= CONTACT ================= -->
+          <button class="accordion-header">📞 Contact Details</button>
+          <div class="accordion-content">
+              <p class="text-center bold">Pranab Mondal</p>
+              <p class="text-center"><a href="tel:+919734075801">📞 9734 075 801</a></p>
+          </div>
+
+          <!-- ================= REFER ================= -->
+          <button class="accordion-header">📢 Share Business Details</button>
+          <div class="accordion-content share-grid">
+
+              <!-- Left: English Buttons -->
+              <div class="share-column">
+                  <button class="other-share-btn" onclick="shareViaNativeEnglish()">
+                      <i class="fa-regular fa-share-from-square"></i>
+                      Share
+                  </button>
+
+                  <button class="share-btn whatsapp-share-btn" onclick="shareOnWhatsAppEnglish()">
+                      <i class="fa-brands fa-whatsapp"></i> Share on WhatsApp
+                  </button>
+              </div>
+
+              <!-- Right: Bengali Buttons -->
+              <div class="share-column">
+                  <button class="other-share-btn" onclick="shareViaNativeBengali()">
+                      <i class="fa-regular fa-share-from-square"></i>
+                      শেয়ার করুন
+                  </button>
+
+                  <button class="share-btn whatsapp-share-btn" onclick="shareOnWhatsAppBengali()">
+                      <i class="fa-brands fa-whatsapp"></i> WhatsApp এ শেয়ার করুন
+                  </button>
+              </div>
+
+          </div>
+
+
+      </section>
+  </main>
+
+
+  <button id="installBtn" class="install-btn" onclick="installPwa()" style="display:none;">📲 Install App</button>
+  <div id="toast" class="toast">App installed successfully! 🎉</div>
+
+  <script src="script.js"></script>
+  <script src="local-name-storage.js"></script>
+  <script src="log-worker.js"></script>
+  <script src="pwa-installation.js"></script>
+
+  <footer>
+      © 2025 Mondal Brothers | Built with ❤️ in India
+  </footer>
 </body>
 </html>

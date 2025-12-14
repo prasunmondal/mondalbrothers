@@ -1,0 +1,126 @@
+body {
+          font-family: Arial, sans-serif;
+          background: #f7f7f7;
+        }
+
+        /* 1x4 grid buttons */
+        .grid-buttons {
+          display: flex;
+              gap: 10px;
+              width: 100%;
+              flex-wrap: nowrap;      /* important */
+              justify-content: space-between;
+          margin-bottom: 10px;
+        }
+
+        .choice-btn {
+        flex: 1;                /* each button takes equal width */
+          background: #fff;
+          padding: 18px 8px;
+          border-radius: 18px;
+          text-align: center;
+          font-size: .8rem;
+          font-weight: 700;
+          box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+          cursor: pointer;
+          border: 2px solid transparent;
+
+          white-space: normal;          /* allow wrapping */
+          word-break: break-word;       /* break long text */
+          overflow-wrap: break-word;    /* fallback */
+          transition: 0.25s ease;
+
+          /* 🔒 Disable text selection */
+          -webkit-user-select: none;    /* Safari */
+          -moz-user-select: none;       /* Firefox */
+          -ms-user-select: none;        /* IE/Edge */
+          user-select: none;            /* Standard */
+        }
+
+
+
+        .choice-btn.active {
+          border-color: #17a45b;        /* darker border green */
+          background: #c9f7df;          /* soft light green background */
+          transform: scale(1.03);
+          box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+
+
+
+        .calc-card {
+          background: #fff;
+          padding: 7px;
+          border-radius: 18px;
+          box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+
+        .calc-row {
+          display: grid;
+          grid-template-columns: 1fr 50px; /* fields left, clear button right */
+          grid-template-rows: auto auto auto;
+          gap: 10px;
+        }
+
+        .clear-btn {
+          grid-row: span 2;         /* spans KG + Amount rows vertically */
+          align-self: center;       /* centers vertically */
+          background: #ffd6d6;
+          color: #fff;
+          border: none;
+          border-radius: 12px;
+          font-size: 1.2rem;
+          cursor: pointer;
+          height: 100%;
+          width: 40px;
+        }
+
+        .clear-btn:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+                background: #ffb5b5;
+        }
+
+
+        .save-and-clear-btn {
+          grid-row: span 2;         /* spans KG + Amount rows vertically */
+          align-self: center;       /* centers vertically */
+          background: #C8FFC8;
+          color: #fff;
+          border: none;
+          border-radius: 12px;
+          font-size: 1.2rem;
+          cursor: pointer;
+          height: 100%;
+          width: 60px;
+        }
+
+        .save-and-clear-btn:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+                background: #A6F5A6;
+        }
+
+        .calc-field {
+
+          text-align: center;
+
+          padding: 12px 14px;
+              border-radius: 12px;
+              border: 2px solid #e6e6e6;
+              font-size: 18px;
+        }
+
+        .calc-field:focus {
+            border-color: #f4a300;
+            box-shadow: 0 0 0 3px rgba(244,163,0,0.25);
+            outline: none;
+        }
+
+        .label-text {
+          font-size: 0.9rem;
+          font-weight: 600;
+          margin-top: 8px;
+        }
+
