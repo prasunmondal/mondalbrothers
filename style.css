@@ -606,20 +606,6 @@ footer {
   /* color: inherit;          /* Keep text color consistent */
 }
 
-.accordion-header {
-  /* padding: 15px 20px;
-  /* text-align: left;
-  /* cursor: pointer;
-}
-
-.bank-row,
-.details-row,
-.upi-details-row {
-  display: flex;
-  align-items: center;        /* vertically center everything */
-  justify-content: space-between;
-}
-
 html, body {
     height: 100%;
     margin: 0;
@@ -628,6 +614,33 @@ html, body {
 main {
     display: flex;
     flex-direction: column;
+}
+
+
+.highlight-link {
+    background: #ffe082;
+    border: 2px solid #ffb300;
+    animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255,179,0,0.6); }
+    70% { box-shadow: 0 0 0 14px rgba(255,179,0,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,179,0,0); }
+}
+
+
+.badge-link {
+    position: relative;
+}
+
+.badge {
+    background: #e53935;
+    color: white;
+    font-size: 11px;
+    padding: 3px 7px;
+    border-radius: 10px;
+    margin-left: 6px;
 }
 
 

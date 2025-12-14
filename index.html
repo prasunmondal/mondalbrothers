@@ -48,30 +48,12 @@
   <main>
       <section class="accordion">
 
-          <!-- ================= PRE-BOOK ================= -->
-          <button class="accordion-header">🎉 Occasion Pre-Booking</button>
-          <div class="accordion-content">
-              <div class="card">
+          <!-- ================= RETAIL-CALCULATOR ================= -->
+          <a class="retail-calculator-accordion accordion-header highlight-link"
+             href="retail-calculator/retail-calculator.html">
+              🎉 Retail Calculator <span class="badge">NEW</span>
+          </a>
 
-                  <h3 class="section-title">📆 Pre-Register Upcoming Orders</h3>
-                  <p class="small-info">
-                      Add your occasion in advance — never forget later.
-                  </p>
-
-                  <form id="occasionForm" class="prebook-form">
-
-                      <input type="text" id="occName" placeholder="Your Name" required />
-                      <input type="text" id="occTitle" placeholder="Occasion Name"/>
-                      <input type="date" id="occDate" required />
-                      <input type="number" id="occQty" placeholder="Approx Quantity (Kg)" />
-
-                      <button type="button" class="primary-btn" onclick="sendOccasionBooking()">
-                          📲 Submit Pre-Booking via WhatsApp
-                      </button>
-
-                  </form>
-              </div>
-          </div>
 
           <!-- ================= PAYMENT SECTION ================= -->
           <button class="accordion-header">💰 Payment Options</button>
@@ -169,9 +151,6 @@
               </div>
           </div>
 
-          <!-- ================= RETAIL-CALCULATOR ================= -->
-          <a class="accordion-header" href="retail-calculator/retail-calculator.html">🎉 Retail Calculator</a>
-
           <!-- ================= QUICK ORDER FORM ================= -->
           <button class="accordion-header">🧾 Order for Tomorrow</button>
           <div class="accordion-content">
@@ -187,6 +166,31 @@
 
                   <button type="submit" class="primary-btn">Send Order via WhatsApp</button>
               </form>
+          </div>
+
+          <!-- ================= PRE-BOOK ================= -->
+          <button class="accordion-header">🎉 Occasion Pre-Booking</button>
+          <div class="accordion-content">
+              <div class="card">
+
+                  <h3 class="section-title">📆 Pre-Register Upcoming Orders</h3>
+                  <p class="small-info">
+                      Add your occasion in advance — never forget later.
+                  </p>
+
+                  <form id="occasionForm" class="prebook-form">
+
+                      <input type="text" id="occName" placeholder="Your Name" required />
+                      <input type="text" id="occTitle" placeholder="Occasion Name"/>
+                      <input type="date" id="occDate" required />
+                      <input type="number" id="occQty" placeholder="Approx Quantity (Kg)" />
+
+                      <button type="button" class="primary-btn" onclick="sendOccasionBooking()">
+                          📲 Submit Pre-Booking via WhatsApp
+                      </button>
+
+                  </form>
+              </div>
           </div>
 
           <!-- ================= CONTACT ================= -->
