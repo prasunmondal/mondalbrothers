@@ -93,7 +93,6 @@ function showReport() {
                 <thead>
                     <tr>
                         <th>Date</th>
-                        <th></th>
     `;
 
     const orderedTypes = [
@@ -114,10 +113,7 @@ function showReport() {
 
     Object.keys(summary).sort().forEach(date => {
         html += `<tr>
-                    <td>${date}</td>
-                    <td>
-                        <button class="delete-date-btn" onclick="deleteEntireDate('${date}')">🗑️</button>
-                    </td>
+                    <td>${date} <button class="delete-date-btn" onclick="deleteEntireDate('${date}')">🗑️</button></td>
                 `;
 
         orderedTypes.forEach(type => {

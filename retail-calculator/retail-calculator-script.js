@@ -15,6 +15,7 @@ window.currentType = null;
         focusKg();
 
         highlightSelectedButton(type);
+        hideReportIfOpen();
     }
 
 
@@ -79,36 +80,39 @@ function recalcAfterRateUpdate() {
     const kg = Number(document.getElementById("kg").value);
     const amount = Number(document.getElementById("amount").value);
 
-    if (kg > 0) {
-        document.getElementById("amount").value = (rate * kg).toFixed(2);
+    if (kg > 0 && rate > 0) {
+        document.getElementById("amount").value = (rate * kg).toFixed(2); // amount → 2
     } else if (amount > 0 && rate > 0) {
-        document.getElementById("kg").value = (amount / rate).toFixed(2);
+        document.getElementById("kg").value = (amount / rate).toFixed(3); // kg → 3
     }
 }
 
 
+
     // Auto calculate based on user change
     function autoCalc(changed) {
-      const rate   = parseFloat(document.getElementById("rate").value);
-      const kg     = parseFloat(document.getElementById("kg").value);
-      const amount = parseFloat(document.getElementById("amount").value);
+        const rate   = parseFloat(document.getElementById("rate").value);
+        const kg     = parseFloat(document.getElementById("kg").value);
+        const amount = parseFloat(document.getElementById("amount").value);
 
-      if (changed === "kg" && rate) {
-        document.getElementById("amount").value = (kg * rate).toFixed(0);
-      }
+        if (!rate || rate <= 0) return;
 
-      if (changed === "amount" && rate) {
-        document.getElementById("kg").value = (amount / rate).toFixed(2);
-      }
+        if (changed === "kg" && kg > 0) {
+            document.getElementById("amount").value = (kg * rate).toFixed(2); // ✅ amount
+        }
 
-      if (changed === "rate" && kg) {
-        document.getElementById("amount").value = (kg * rate).toFixed(0);
-      }
+        if (changed === "amount" && amount > 0) {
+            document.getElementById("kg").value = (amount / rate).toFixed(3); // ✅ kg
+        }
 
-      // Save rate per type
-      if (selectedType && rate) {
-        localStorage.setItem("rate_" + selectedType, rate);
-      }
+        if (changed === "rate" && kg > 0) {
+            document.getElementById("amount").value = (kg * rate).toFixed(2); // ✅ amount
+        }
+
+        // Save rate per type
+        if (selectedType && rate) {
+            localStorage.setItem("rate_" + selectedType, rate);
+        }
     }
 
     function saveShopName() {
@@ -174,36 +178,24 @@ function recalcAfterRateUpdate() {
     }
 
 function saveAndClearKgAmount() {
-    const kg = parseFloat(document.getElementById("kg").value);
-    const rate = parseFloat(document.getElementById("rate").value);
-    const amount = parseFloat(document.getElementById("amount").value); // optional
-    const type = window.currentType;
+    const kgRaw = parseFloat(document.getElementById("kg").value);
+    const rate  = parseFloat(document.getElementById("rate").value);
 
-    if (!type) {
-        console.warn("No chicken type selected — cannot log sale.");
-        return;
-    }
+    if (!window.currentType || !kgRaw || !rate) return;
 
-    if (!kg || kg <= 0) {
-        console.warn("Invalid KG entered — skipping log.");
-        return;
-    }
+    const kg = Number(kgRaw.toFixed(3));                 // ✅ kg → 3
+    const amount = Number((kg * rate).toFixed(2));       // ✅ amount → 2
 
-    if (!rate || rate <= 0) {
-        console.warn("Invalid RATE — cannot log sale.");
-        return;
-    }
-
-    logSale(type, kg, rate, getISTISOString());
+    logSale(window.currentType, kg, rate, getISTISOString());
 
     document.getElementById("kg").value = "";
     document.getElementById("amount").value = "";
-//    document.getElementById("rate").value = "";
 
     focusKg();
     trackEvent("RCalc: Saved");
     hideReportIfOpen();
 }
+
 
 
 function clearKgAmount() {
@@ -275,3 +267,151 @@ function goHome() {
     window.location.href = "../index.html";
     // Or put the correct path of your home screen
 }
+
+
+
+function downloadPdf(type) {
+    if (type === "full") {
+        console.log("Download PDF - Full Data");
+    } else {
+        console.log("Download PDF - Daywise Data");
+    }
+}
+
+function downloadCsv(type) {
+    if (type === "full") {
+        console.log("Download CSV - Full Data");
+    } else {
+        console.log("Download CSV - Daywise Data");
+    }
+}
+
+
+async function downloadPdf(type) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const salesLog = JSON.parse(localStorage.getItem("salesLog") || "[]");
+    if (!salesLog.length) {
+        alert("No sales data available");
+        return;
+    }
+
+    const shopName = localStorage.getItem("shop_name") || "Shop";
+    const today = new Date().toISOString().split("T")[0];
+
+    // ---------- HEADER ----------
+    doc.setFontSize(16);
+    doc.text(`${shopName} - Sales Report`, 14, 16);
+
+    doc.setFontSize(11);
+    doc.text(
+        `Report Type: ${type === "full" ? "Full Data" : "Daywise Summary"}`,
+        14,
+        24
+    );
+    doc.text(`Generated: ${today}`, 150, 24);
+
+    let y = 34;
+
+    // ================= FULL DATA =================
+    if (type === "full") {
+        doc.setFont(undefined, "bold");
+        doc.text("Date", 14, y);
+        doc.text("Type", 45, y);
+        doc.text("KG", 95, y);
+        doc.text("Rate", 115, y);
+        doc.text("Amount", 145, y);
+        doc.setFont(undefined, "normal");
+
+        y += 6;
+
+        let totalKg = 0;
+        let totalAmount = 0;
+
+        salesLog.forEach(row => {
+            if (y > 270) {
+                doc.addPage();
+                y = 20;
+            }
+
+            const date = row.saleTimestamp.split("T")[0];
+            const typeLabel = row.type.replace(/_/g, " ");
+            const kg = Number(row.kg);
+            const amount = kg * row.rate;
+
+            doc.text(date, 14, y);
+            doc.text(typeLabel, 45, y);
+            doc.text(kg.toFixed(3), 95, y, { align: "right" });
+            doc.text(Number(row.rate).toFixed(2), 120, y, { align: "right" });
+            doc.text(amount.toFixed(2), 160, y, { align: "right" });
+
+            totalKg += kg;
+            totalAmount += amount;
+            y += 6;
+        });
+
+        y += 6;
+        doc.setFont(undefined, "bold");
+        doc.text("TOTAL", 45, y);
+        doc.text(totalKg.toFixed(3), 95, y, { align: "right" });
+        doc.text(totalAmount.toFixed(2), 160, y, { align: "right" });
+    }
+
+    // ================= DAYWISE SUMMARY =================
+    if (type === "daywise") {
+        const grouped = {};
+
+        salesLog.forEach(row => {
+            const date = row.saleTimestamp.split("T")[0];
+            const key = `${date}|${row.type}`;
+
+            if (!grouped[key]) {
+                grouped[key] = {
+                    date,
+                    type: row.type,
+                    totalKg: 0,
+                    totalAmount: 0
+                };
+            }
+
+            grouped[key].totalKg += Number(row.kg);
+            grouped[key].totalAmount += row.kg * row.rate;
+        });
+
+        doc.setFont(undefined, "bold");
+        doc.text("Date", 14, y);
+        doc.text("Type", 55, y);
+        doc.text("Total KG", 120, y);
+        doc.text("Total Amount", 155, y);
+        doc.setFont(undefined, "normal");
+
+        y += 6;
+
+        Object.values(grouped).forEach(row => {
+            if (y > 270) {
+                doc.addPage();
+                y = 20;
+            }
+
+            doc.text(row.date, 14, y);
+            doc.text(row.type.replace(/_/g, " "), 55, y);
+            doc.text(row.totalKg.toFixed(3), 130, y, { align: "right" });
+            doc.text(row.totalAmount.toFixed(2), 170, y, { align: "right" });
+
+            y += 6;
+        });
+    }
+
+    // ---------- FILE NAME ----------
+    const safeShop = shopName.replace(/\s+/g, "");
+    const reportTag = type === "full" ? "Sales_Full" : "Sales_Daily";
+
+    const fileName = `MB_${safeShop}_${reportTag}_${today}.pdf`;
+
+    doc.save(fileName);
+
+    trackEvent(`RCalc: PDF Downloaded (${type})`);
+}
+
+

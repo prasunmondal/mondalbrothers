@@ -52,6 +52,7 @@ body {
         .calc-card {
           background: #fff;
           padding: 7px;
+          margin-bottom: 40px;
           border-radius: 18px;
           box-shadow: 0 6px 20px rgba(0,0,0,0.12);
         }
@@ -124,3 +125,52 @@ body {
           margin-top: 8px;
         }
 
+/* ================= DOWNLOAD UI ================= */
+.download-section {
+    padding: 0px 10px 15px 10px;
+    border-radius: 14px;
+    background: #fffbe6;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.download-title {
+    text-align: center;
+    font-weight: 100;
+    margin: 6px;
+    margin-top: 10px;
+    color: #b00000;
+    font-size: 13px;
+}
+
+.download-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.download-btn {
+    padding: 5px;
+    font-size: 14px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.download-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* PDF style */
+.download-btn.pdf {
+    background: #ffe0e0;
+    color: #b00000;
+}
+
+/* CSV style */
+.download-btn.csv {
+    background: #e0ffe6;
+    color: #006b2d;
+}

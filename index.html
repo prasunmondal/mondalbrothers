@@ -13,11 +13,6 @@
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js");
     }
-    function payNow() {
-      let amount = document.getElementById("amt").value;
-      let upi = `upi://pay?pa=prasun@okaxis&pn=Mondal%20Brothers&am=${amount}&cu=INR&tn=Payment`;
-      window.location.href = upi;
-    }
   </script>
 
     <link rel="stylesheet"
@@ -69,7 +64,8 @@
                       <img src="images/payment-qr.jpeg" alt="Payment QR" class="qr-code" />
 
                       <input type="number" id="amt" class="amount-input" placeholder="Enter Amount (Optional)" />
-                      <button class="primary-btn" onclick="openUPILink()">Pay via UPI App</button>
+<!--                      <button class="primary-btn" onclick="openUPILink()">Pay via UPI App</button>-->
+                      <button class="upi-pay-btn" onclick="payViaUpiSmart()">Pay Now</button>
                   </div>
 
                   <ul class="details-list">

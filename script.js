@@ -139,32 +139,65 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Auto-generate UPI deep link from entered amount
 function openUPILink() {
-  const amountField = document.getElementById("amt");
-  const amount = amountField.value.trim();
-  const upiId = "prsnmondal@ybl";
-  const name = encodeURIComponent("Prasun Mondal");
-  const note = encodeURIComponent("Paying Mondal Brothers");
+    payViaUpiSmart()
 
-  trackEvent(`Clicked: Pay via UPI: ${amount}`)
-
-  // If no amount, create URL without am parameter
-  let url = `upi://pay?pa=${upiId}&pn=${name}&cu=INR&tn=${note}`;
-
-  // If valid amount added, include am parameter
-  if (amount && !isNaN(amount) && Number(amount) > 0) {
-    url += `&am=${amount}`;
-  }
-
-  window.location.href = url;
+//  const amountField = document.getElementById("amt");
+//  const amount = amountField.value.trim();
+//  const upiId = "prsnmondal@ybl";
+//  const name = encodeURIComponent("Prasun Mondal");
+//  const note = encodeURIComponent("Paying Mondal Brothers");
+//
+//  trackEvent(`Clicked: Pay via UPI: ${amount}`)
+//
+//  // If no amount, create URL without am parameter
+//  let url = `upi://pay?pa=${upiId}&pn=${name}&cu=INR&tn=${note}`;
+//
+// const upiUrl =
+//        `upi://pay` +
+//        `?pa=${encodeURIComponent(upiId)}` +
+//        `&pn=${encodeURIComponent(payeeName)}` +
+//        `&am=${amount}` +
+//        `&cu=INR` +
+//        `&tn=${encodeURIComponent(note)}`;
+//  // If valid amount added, include am parameter
+//  if (amount && !isNaN(amount) && Number(amount) > 0) {
+//    url += `&am=${amount}`;
+//  }
+//
+//  window.location.href = url;
 }
 
-function payNow() {
-  openUPILink();
+function payViaUpiSmart() {
+    const upiId = "prsnmondal@ybl";
+    const payeeName = "Prasun Mondal";
+    const note = "Payment to Mondal Brothers";
+
+    const amountVal = Number(document.getElementById("amt")?.value);
+
+    let upiUrl =
+        `upi://pay` +
+        `?pa=${encodeURIComponent(upiId)}` +
+        `&pn=${encodeURIComponent(payeeName)}` +
+        `&cu=INR` +
+        `&tn=${encodeURIComponent(note)}`;
+
+    // Amount OPTIONAL
+    if (amountVal && amountVal > 0) {
+        if (amountVal > 100000) {
+            alert("UPI limit is ₹1,00,000. Please split payment.");
+            return;
+        }
+        upiUrl += `&am=${amountVal.toFixed(2)}`;
+    }
+
+    // Try opening UPI
+    window.location.href = upiUrl;
+
+    // Fallback message (for desktop / no UPI apps)
+    setTimeout(() => {
+        alert("If UPI app did not open, please pay manually using your UPI app.");
+    }, 1200);
 }
-
-
-
-
 
 // Pre-Order
 function sendOccasionBooking() {
@@ -210,4 +243,3 @@ document.querySelectorAll(".accordion-header").forEach(header => {
     }, 150);
   });
 });
-
